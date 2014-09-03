@@ -1,123 +1,52 @@
 // A simple expression evaluator.
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Stack;
 
 // Expression Evaluator.
 public class ExpressionEvaluator {
-    private String infix;
-    private ArrayList<String> postfix;
+    private String expression;
+    private InfixToPostfix infixObject;
 
     public ExpressionEvaluator(String expression) {
-        infix = expression;
-        postfix = new ArrayList<String>();
+        this.expression = expression;
     }
 
-    // Check if the given character is an operator.
-    private boolean isOperator(char character) {
-        if(character == '/' || character == '*' || character == '+' || character == '-') return true;
-        else return false;
-    }
+    public String getExpressionResult() {
+        Stack<Character> result = new Stack<Character>();
+        String infix, infixResult;
 
-    // Return the precedence of the given operator.
-    private int precedence(char operator) {
-        if(operator == '/' || operator == '*') return 2;
-        else return 1;
-    }
-
-    // Infix to Postfix conversion using stack.
-    public void infixToPostfix() {
-        Stack<Character> operators = new Stack<Character>();
-        Stack<String> operands = new Stack<String>();
-
-        for(int i = 0; i < infix.length(); ++i) {
-            if(isOperator(infix.charAt(i))) {
-                if(operators.isEmpty()) operators.push(infix.charAt(i));
-                else {
-                    if(precedence(infix.charAt(i)) > precedence(operators.peek())) operators.push(infix.charAt(i));
-                    else {
-                        while(!operators.isEmpty() && precedence(infix.charAt(i)) <= precedence(operators.peek())) {
-                            postfix.add(operators.pop() + "");
-                        }
-
-                        operators.push(infix.charAt(i));
-                    }
-                }
-            }
-            else {
-                // Extract the operand.
-                String currentOperand = infix.charAt(i) + "";
-                ++i;
-                while(i < infix.length() && !isOperator(infix.charAt(i))) {
-                    currentOperand += infix.charAt(i);
-                    ++i;
+        for(int i = 0; i < expression.length(); ++i) {
+            if (expression.charAt(i) == ')') {
+                infix = "";
+                Character topCharacter = result.pop();
+                while (topCharacter != '(') {
+                    infix = topCharacter + infix;
+                    topCharacter = result.pop();
                 }
 
-                // Append the operand.
-                postfix.add(currentOperand);
+                infixObject = new InfixToPostfix(infix);
+                infixObject.convertToPostfix();
+                infixResult = infixObject.getInfixResult();
 
-                // 1 step back, when an operator is seen.
-                if(i < infix.length()) --i;
+                // Push the result into stack.
+                for (int j = 0; j < infixResult.length(); ++j) {
+                    result.push(infixResult.charAt(j));
+                }
+            } else {
+                result.push(expression.charAt(i));
             }
         }
 
-        while(!operators.isEmpty()) {
-            postfix.add(operators.pop() + "");
-        }
-    }
-
-    // Perform the given binary operation.
-    public String performOperation(String operand1, String operand2, Character operator) {
-        if(operator == '+') {
-            BigDecimal a = new BigDecimal(operand1);
-            BigDecimal b = new BigDecimal(operand2);
-            BigDecimal c = a.add(b).setScale(2, BigDecimal.ROUND_UP);
-
-            return c.toString();
-        }
-        else if(operator == '-') {
-            BigDecimal a = new BigDecimal(operand1);
-            BigDecimal b = new BigDecimal(operand2);
-            BigDecimal c = a.subtract(b).setScale(2, BigDecimal.ROUND_UP);
-
-            return c.toString();
-        }
-        else if(operator == '*') {
-            BigDecimal a = new BigDecimal(operand1);
-            BigDecimal b = new BigDecimal(operand2);
-            BigDecimal c = a.multiply(b).setScale(2, BigDecimal.ROUND_UP);
-
-            return c.toString();
-        }
-        else {
-            BigDecimal a = new BigDecimal(operand1);
-            BigDecimal b = new BigDecimal(operand2);
-            BigDecimal c = a.divide(b).setScale(2, BigDecimal.ROUND_UP);
-
-            return c.toString();
-        }
-    }
-
-    // Evaluate the postfix expression.
-    public String evaluateExpression() {
-        Stack<String> partialResults = new Stack<String>();
-        String operand1, operand2, currentValue;
-
-        for(int i = 0; i < postfix.size(); ++i) {
-            currentValue = postfix.get(i);
-            if(isOperator(currentValue.charAt(0))) {
-                operand2 = partialResults.pop();
-                operand1 = partialResults.pop();
-
-                String result = performOperation(operand1, operand2, currentValue.charAt(0));
-                partialResults.push(result);
-            }
-            else {
-                partialResults.push(currentValue);
-            }
+        // Evaluate the final infix expression.
+        infix = "";
+        while (!result.isEmpty()) {
+            infix = result.pop() + infix;
         }
 
-        return partialResults.pop();
+        infixObject = new InfixToPostfix(infix);
+        infixObject.convertToPostfix();
+        infixResult = infixObject.getInfixResult();
+
+        return infixResult;
     }
 }
