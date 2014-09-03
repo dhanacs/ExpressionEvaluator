@@ -4,7 +4,6 @@ public class Tester {
         object = new ExpressionEvaluator("(4+(50*6)-(500/250))");
         System.out.println(object.getExpressionResult());
 
-
         object = new ExpressionEvaluator("(25)/(5+(10/2)*1)");
         System.out.println(object.getExpressionResult());
 
