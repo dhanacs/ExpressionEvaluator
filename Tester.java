@@ -1,5 +1,7 @@
-public class Tester {
-    public static void main(String []args) {
+public class Tester 
+{
+    public static void main(String []args) 
+    {
         ExpressionEvaluator object;
         object = new ExpressionEvaluator("(4+(50*6)-(500/250))");
         System.out.println(object.getExpressionResult());
