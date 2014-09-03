@@ -1,6 +1,8 @@
 A simple expression evaluator using java.
-Supported operations +, -, * and /.
+Supports addition, subtraction, multiplication and division.
 Has the code for infix to postfix conversion using stack.
 
-Include operators between sub-expressions.
-Eg. "(2+3)(1+4)" is invalid. Correct form is (2+3)*(1+4).
+Sample Expression : (5+6*5+(100/10)+((25*5)*(50/5)))*1000
+        
+Note : Include operators between sub-expressions.
+Eg. "(2+3)(1+4)" is invalid and "(2+3)*(1+4)" is valid.
