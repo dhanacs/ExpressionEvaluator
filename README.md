@@ -1,5 +1,5 @@
 A simple expression evaluator using java.
-Supported operations +, -, * and /.
+Supported operations are +, -, * and /.
 Has the code for infix to postfix conversion using stack.
 
 Sample Expression : (5+6*5+(100/10)+((25*5)*(50/5)))*1000
